@@ -1,0 +1,43 @@
+{
+  "name": "api-like-me",
+  "version": "1.0.0",
+  "description": "PovioLabs Test Assignment",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project",
+    "buildAndRun": "tsc --project ./ && node ./outputApp/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UrbanZ85/PovioLabs-Test-Asignment.git"
+  },
+  "keywords": [
+    "Poviolabs",
+    "Test",
+    "Api"
+  ],
+  "author": "Urban Zupancic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UrbanZ85/PovioLabs-Test-Asignment.git/issues"
+  },
+  "homepage": "https://github.com/UrbanZ85/PovioLabs-Test-Asignment.git#readme",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-jwt": "^6.0.2",
+    "@types/node": "^16.4.7",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.5"
+  }
+}

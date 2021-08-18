@@ -1,0 +1,10 @@
+{
+    "secret": "gklnbds891z9tf23da345g34asda09r4576GH#)#42/(dad87fg3)lk98q!8)(b?%)(#zbn#&(trh",
+    "iss": "LikemeAppIss",
+    "audience": "LikeMeAppAudience",
+    "mongoDb": {
+        "MONGO_USER":"AppUser",
+        "MONGO_PASSWORD": "8XlGmhY14qOzCbBM",
+        "MONGO_PATH": "mongodb+srv://AppUser:8XlGmhY14qOzCbBM@cluster0.imb8x.mongodb.net/ApiLikeMeDB?retryWrites=true&w=majority"
+    }
+}
