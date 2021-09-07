@@ -1,4 +1,5 @@
-import User, { IUser, IUserDTO } from "../../Models/User";
+import { IUser, IUserDTO } from "../../Models/User";
+import User from '../../DataBase/Schemas/UserDB';
 import Responses from '../../_helpers/Responses/response'
 import {UserChangeLike, LikeMe, UnlikeMe} from './user-change-like';
 

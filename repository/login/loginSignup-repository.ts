@@ -6,88 +6,86 @@ import Responses from '../../_helpers/Responses/response'
 import InnerResponses from '../../_helpers/Responses/inner-response'
 import { encodeSession } from "../../_helpers/JWT/encodeSession";
 import env from '../../Enviroment/enviroment';
+import moment from 'moment';
 
 function UserAuthRepository(){
     const responses = Responses();
     const innerResponses = InnerResponses();
     const SECRET_KEY = env.Config.JWT.secret;
 
-    async function userSettings(req :any, res : any, next: any) {
-        const UserId = req.body.UserId;
-        const user = await getUserById(UserId)
-                                  .then((result: IUser) => {return result})
-                                  .catch(err=> {return undefined})
-
-        if (req){
-            res.status(200).send(responses.Response('OK!', [removePasswordFromUser(user)]));
-            return
-        }
-        else{
-            res.status(400).send(responses.ResponseNoData("Error! No params send"));
-            return
-        }
-    }
-
-    async function updatePassword(req :any, res : any, next: any) {
+    async function signUp(req :any, res : any, next: any) {
         if (req){
             const UserName = req.body.UserName;
-            const OldPassword = req.body.OldPassword;
-            const Password1 = req.body.NewPassword1;
-            const Password2 = req.body.NewPassword2;
-            //Check old password
+            const FirstName = req.body.FirstName;
+            const LastName = req.body.LastName;
+            const Password1 = req.body.Password1;
+            const Password2 = req.body.Password2;
+            const user = await getUserByUserName(UserName).then(result => {return result}).catch(err=> {return null});
+            if(user){
+                res.status(400).send(responses.ResponseNoData("User already created!"));
+                return
+            }
+
             if(Password1 !== Password2)
             {
                 res.status(400).send(responses.ResponseNoData("Passwords not matched!"));
                 return
             }
-            CheckPassword(UserName, OldPassword)
-            .then(result => {
-                if(result.Data[0].granted === 1){
-                    bcrypt.hash(Password1, saltRounds, function (err :any,   hash: any) {   
-                        if(err){
-                         res.status(500).send(responses.ResponseNoData(err));
-                         return
-                        }
-                        const filter = { UserName: UserName };
-                        const update = { Password: hash };
-                        let userPasswordUpdated = User.findOneAndUpdate(filter, update,{
-                            new: true,
-                            useFindAndModify: true
-                          },function(err, doc) {
-                            if(err) {
-                                res.status(400).send(responses.ResponseNoData(err.toString()));
-                                return
-                            }
-                        });
-                    });
-                    res.status(200).send(responses.Response("OK!", result.Data[0].user));
-                    return
+            bcrypt.hash(Password1, saltRounds, function (err :any,   hash: any) {   
+                if(err){
+                 res.status(500).send(responses.ResponseNoData(err));
+                 return
                 }
-            })
-            .catch(err=> {
-                res.status(400).send(responses.ResponseNoData(err));
+                
+                const user = new User({UserName: UserName, FirstName: FirstName, LastName: LastName, Password: hash})
+                user.save()
+                .then((result: any) => {
+                    res.status(200).send(responses.ResponseNoData("User Created!"));
+                    return
+                })
+                .catch((err: any) =>{
+                    res.status(400).send(responses.ResponseNoData("Error saving user!"));
+                    return
+                });
+                return
             });
-            /* res.status(400).send(responses.ResponseNoData("Password not changed!"));
-            return */
         }
         else{
             res.status(400).send(responses.ResponseNoData("Error! No params send"));
             return
         }
     }
-    function getUserById(UserID: String): Promise<any>{
-        return new Promise(function (resolve, reject) {
-            User.findOne({'_id': UserID}, function (err :string, user: any) {
-                if(user !== null){
-                    resolve(user._doc);
+
+    async function logIn(req :any, res : any, next: any) {
+        if (req){
+            const UserName = req.body.UserName;
+            const Password = req.body.Password;
+            const granted = await CheckPassword(UserName, Password)
+            .then((granted) =>{
+                if(granted.Data[0].granted === 1){
+
+                    const session = encodeSession(SECRET_KEY, {
+                        id: granted.Data[0].user._id,
+                        username: granted.Data[0].user.UserName,
+                        dateCreated: Number(Date.now()),        
+                    });
+
+                    res.status(200).send(responses.Response('OK!', [], session));
                     return
                 }
                 else{
-                    reject(err);
+                    res.status(400).send(responses.ResponseNoData(granted.Message));
                     return
                 }
+            })
+            .catch((err) =>{
+                res.status(400).send(responses.ResponseNoData(err));
             });
-        });
+        }
+        else{
+            res.status(400).send(responses.ResponseNoData("Error! No params send"));
+            return
+        }
     }
 
     function getUserByUserName<IUser>(UserName: string): Promise<IUser>{
@@ -137,8 +135,8 @@ function UserAuthRepository(){
     }
 
     return {
-        userSettings: userSettings,
-        updatePassword: updatePassword
+        signUp: signUp,
+        logIn: logIn
       }
 }
 

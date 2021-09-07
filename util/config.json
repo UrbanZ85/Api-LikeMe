@@ -1,10 +1,32 @@
-{
-    "secret": "gklnbds891z9tf23da345g34asda09r4576GH#)#42/(dad87fg3)lk98q!8)(b?%)(#zbn#&(trh",
-    "iss": "LikemeAppIss",
-    "audience": "LikeMeAppAudience",
-    "mongoDb": {
-        "MONGO_USER":"AppUser",
-        "MONGO_PASSWORD": "8XlGmhY14qOzCbBM",
-        "MONGO_PATH": "mongodb+srv://AppUser:8XlGmhY14qOzCbBM@cluster0.imb8x.mongodb.net/ApiLikeMeDB?retryWrites=true&w=majority"
+[
+    {
+        "Enviroment":"test",
+            "Config": {
+                "JWT": {
+                        "secret": "test_secret",
+                        "iss": "LikemeAppIssTest",
+                        "audience": "LikeMeAppAudienceTest"
+                    },
+                "mongoDb": {
+                    "MONGO_USER":"AppUser",
+                    "MONGO_PASSWORD": "8XlGmhY14qOzCbBM",
+                    "MONGO_PATH": "mongodb+srv://AppUser:8XlGmhY14qOzCbBM@cluster0.imb8x.mongodb.net/ApiLikeMeDB?retryWrites=true&w=majority"
+                }
+            }
+    },
+    {
+        "Enviroment":"prod",
+        "Config": {
+            "JWT": {
+                "secret": "gklnbds/&#891z9tf23sfda3#/hsd45g3jh4asda09r457cvx6GH#)#4ysa2/(rew|2dad87fg3)lk98q!8)(b?%)(#zbn#&(trh",
+                "iss": "LikemeAppIssProd",
+                "audience": "LikeMeAppAudienceProd"
+            },
+            "mongoDb": {
+                "MONGO_USER":"AppUser",
+                "MONGO_PASSWORD": "8XlGmhY14qOzCbBM",
+                "MONGO_PATH": "mongodb+srv://AppUser:8XlGmhY14qOzCbBM@cluster0.imb8x.mongodb.net/ApiLikeMeDB?retryWrites=true&w=majority"
+            }
+        }
     }
-}
+]

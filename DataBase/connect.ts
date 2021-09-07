@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import config from "../util/config.json";
+//import config from "../util/config.json";
+import env from '../Enviroment/enviroment';
 
 function connect() {
-  const dbUri = config.mongoDb.MONGO_PATH;
+  const dbUri = env.Config.mongoDb.MONGO_PATH;
 
   return mongoose
     .connect(dbUri, {
