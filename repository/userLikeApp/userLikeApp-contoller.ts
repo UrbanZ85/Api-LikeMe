@@ -17,6 +17,5 @@ class UserLikeAppContoller{
     this.router.get('/user/:id/unlike', this.userLikeApp.likeUnlikeUser);
     this.router.get('/most-liked', this.userLikeApp.mostLiked);
     }
-
 }
 export default UserLikeAppContoller

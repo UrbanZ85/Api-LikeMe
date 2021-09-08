@@ -4,8 +4,7 @@ import { decodeSession } from './decodeSession';
 import { encodeSession } from './encodeSession';
 import { checkExpirationStatus } from './jwt';
 import env from '../../Enviroment/enviroment';
-
-  
+import DecodeHeader from './decodeHeader';
 
 /**
  * Express middleware, checks for a valid JSON Web Token and returns 401 Unauthorized if one isn't found.
@@ -16,17 +15,21 @@ export function requireJwtMiddleware(request: Request, response: Response, next:
         status: 401,
         message: message
     });
-
-    const requestHeader = "Authorization";
-    const responseHeader = "Renewed-Authorization";
-    const header = request.header(requestHeader);
     const SECRET_KEY = env.Config.JWT.secret;
+    const responseHeader = "Renewed-Authorization";
+    
+    /*  
+    const requestHeader = "Authorization";
+    const header = request.header(requestHeader);
+    
     if (!header) {
         unauthorized(`Required ${requestHeader} header not found.`);
         return;
     }
-
+    
     const decodedSession: DecodeResult = decodeSession(SECRET_KEY, header);
+    */ 
+    const decodedSession: DecodeResult = DecodeHeader(request);
     
     if (decodedSession.type === "integrity-error" || decodedSession.type === "invalid-token") {
         unauthorized(`Failed to decode or validate authorization token. Reason: ${decodedSession.type}.`);
@@ -65,3 +68,4 @@ export function requireJwtMiddleware(request: Request, response: Response, next:
     // Request has a valid or renewed session. Call next to continue to the authenticated route handler
     next();
 }
+

@@ -2,6 +2,8 @@ import { IUser, IUserDTO } from "../../Models/User";
 import User from '../../DataBase/Schemas/UserDB';
 import Responses from '../../_helpers/Responses/response'
 import {UserChangeLike, LikeMe, UnlikeMe} from './user-change-like';
+import { DecodeResult } from "../../Models/jwtModel";
+import DecodeHeader from '../../_helpers/JWT/decodeHeader';
 
 function UserLikeAppRepository(){
     const responses = Responses();
@@ -15,34 +17,44 @@ function UserLikeAppRepository(){
             res.status(200).send(responses.Response("OK!",[userLikes]));
         }
         else{
-            res.status(400).send({"message" : "Error! No params send"});
+            res.status(400).send(responses.ResponseNoData("Error! No params send"));
         }
     }
     function likeUnlikeUser(req :any, res : any, next: any) {
-        const userId = '610afc1e21c3064d6cfdff52'//req.params.userId
-        const likedUnlikeUserId = req.params.id
+        const decodedSession: DecodeResult = DecodeHeader(req);
 
-        //console.log(likedUnlikeUserId)
-        const method = (req.route.path).split("/").pop();
-        //console.log(method)
-        if (method === 'like'){
-            userChange.setStrategy(new LikeMe);
-            userChange.changeToLikeOrUnlike(userId, likedUnlikeUserId);
+        if(decodedSession && decodedSession.type === 'valid'){
+            const userId: string = ""+decodedSession.session.id;
+            const likedUnlikeUserId = req.params.id;
+    
+            //console.log(likedUnlikeUserId)
+            const method = (req.route.path).split("/").pop();
+            //console.log(method)
+            if (method === 'like'){
+                userChange.setStrategy(new LikeMe);
+                userChange.changeToLikeOrUnlike(userId, likedUnlikeUserId);
+            }
+            else if (method === 'unlike'){
+                userChange.setStrategy(new UnlikeMe);
+                userChange.changeToLikeOrUnlike(userId, likedUnlikeUserId);
+            }
+
+            if (req){
+                //res.status(200).send({"message" : "User "+ method});
+                res.status(200).send(responses.ResponseNoData("User "+ method));
+                return;
+            }
+            else{
+                res.status(400).send(responses.ResponseNoData("Error! No params send"));
+                return;
+            }
         }
-        else if (method === 'unlike'){
-            userChange.setStrategy(new UnlikeMe);
-            userChange.changeToLikeOrUnlike(userId, likedUnlikeUserId);
-        }
+        res.status(400).send(responses.ResponseNoData("Season not found!"));
+        return;
 
         //https://betterprogramming.pub/design-patterns-using-the-strategy-pattern-in-javascript-3c12af58fd8a
         //strategy patern
 
-        if (req){
-            res.status(200).send({"message" : "User "+ method});
-        }
-        else{
-            res.status(400).send({"message" : "Error! No params send"});
-        }
     }
 
     function mostLiked(req :any, res : any, next: any) {
@@ -58,7 +70,7 @@ function UserLikeAppRepository(){
 
         }
         else{
-            res.status(400).send({"message" : "Error! No params send"});
+            res.status(400).send(responses.ResponseNoData("Error! No params send"));
         }
     }
 

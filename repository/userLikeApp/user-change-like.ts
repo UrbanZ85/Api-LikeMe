@@ -14,7 +14,6 @@ export class UserChangeLike{
     }
 
     public changeToLikeOrUnlike(userId: string, likedUnlikeUserId:string): void {
-        console.log(likedUnlikeUserId)
         this.strategy.changeLike(userId, likedUnlikeUserId);
     }
 }
